@@ -1,0 +1,5 @@
+source 'https://rubygems.org/'
+gem 'zurb-foundation', '=4.1.2'
+gem 'sass', '>= 3.2.0'
+gem 'rake', '>=0' 
+gem 'compass'
