@@ -6,15 +6,14 @@ Based off aoshiftctrl `htaccess` ..this is a .htaccess/htpasswd combo creation P
 Example
 -------
 
-> include('htaccessible.class.php');
->
->   $htaset = new htaccessible;
->	  $htaset->filelocation('Location where you want files to be put here');
->	  $htaset->add_user('username here');
->	  $htaset->add_pwd('password here');
->	  $htaset->add_auths('Auth_type and Directory Name here');
-> 	//This creates files
->   $htaset->htcreate(); 
+   include('htaccessible.class.php');
+   $htaset = new htaccessible;
+   $htaset->filelocation('Location where you want files to be put here');
+   $htaset->add_user('username here');
+	 $htaset->add_pwd('password here');
+	 $htaset->add_auths('Auth_type and Directory Name here');
+   //This creates files
+   $htaset->htcreate(); 
 
 
 The Class File
