@@ -1,11 +1,15 @@
 <?php
 class htaccessible {
+
 	public $location; //Location of .htaccess, .htpasswd
 	public $username; //Name of user allowed to access
 	public $pwd; //Uh duhhhh 
 	public $authtype; //Htaccess Auth
 	public $authname; //Name of Protected Folder
-
+	public $statusmsgs; //All message reports go here
+	
+	$statusmsgs = array(); //Used to contain all output msgs
+	
 	public function filelocation($given_location) {
 		$this->location = $given_location;
 		
@@ -26,6 +30,30 @@ class htaccessible {
 	public function add_auths($given_type, $given_name) {
 		$this->authtype = $given_type;
 		$this->authname = $given_name;
+	}
+	
+	public function statusmsgs($wrappername,$children) {
+			
+			if(isset($wrapperelem)) {
+				echo '<'.$wrapperelem.'>';				
+			}
+				if(isset($statusmsgs) && is_array($statusmsgs)) {
+					foreach($statusmsgs as $msg) {
+						if(isset($children)) {
+							echo '<'.$children.'>';
+						}
+							echo $msg;
+						if(isset($children)) {
+							echo '</'.$children.'>';
+						}
+					}
+				}
+				else {
+					echo 'Nothing to report';
+				}
+			if($wrapperelem) {
+				echo '</'.$wrapperelem.'>';		
+			}
 	}
 	
 	public function htcreate() {
