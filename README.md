@@ -8,43 +8,25 @@ Example
 
     include('htaccessible.class.php');
    
-    $htaset = new htaccessible;
-   
-    $htaset->filelocation('Location where you want files to be put here');
+	//Declare the class
+    $htaset = new htaccessible;  
+    
+	//Location that you wnt to place files in. Uses mkdir to place
+	$htaset->filelocation('Location where you want files to be put here');
    
     $htaset->add_user('username here');
-   
     $htaset->add_pwd('password here');
     
-    $htaset->add_auths('Auth_type and Directory Name here');
+	//Takes two arguments for both the Authentication Type and Directory Name
+    $htaset->add_auths('Auth_type','Directory Name');
 	 
-    //This creates files
-   
+    //This makes it all happen
     $htaset->htcreate(); 
 
-
+	
 The Class File
 --------------
 
 The class name is _htaccessible_ and can be included in any PHP project as normal (via include or require)
 
-
-
-Functions & Objects
--------------------
-
-	1. filelocation($given_location)
-		1. This takes the _$given location_ and creates the directory given (with 0777 permissions) if it doesn't exist.
-	
-
-	1. add_user($given_name)
-	
-
-	1. add_pwd($given_pwd)	
-	
-
-	1. add_auths($given_type, $given_name)
-	
-
-	1. htcreate()
-		1. Once all the other functions have been used then this one is run to create the necesscary files.
+Still working on functions breakdown text (please refer to the example/ folder for an example of how this runs or message me with any questions or issues).
