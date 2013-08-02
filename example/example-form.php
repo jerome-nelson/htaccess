@@ -7,8 +7,7 @@ if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset->add_pwd($_POST['passwd']);
 	$htaset->add_auths($_POST['auth_type'],$_POST['directory']);
 	$htaset->htcreate(); 
-	unset($htaset);
-
+	unset($htaset);	
 }
 ?>
 <!DOCTYPE HTML>
@@ -49,7 +48,7 @@ if(isset($_POST['submit']) && $_POST['submit']) {
 	</form>
 </section> 
 <section class="row">
-	<div class="small-6 columns small-offset-3">Framework used: <a href="foundation.zurb.com">ZURB Foundation</a></div>
+	<div class="small-6 columns small-offset-3"><a href="http://badge.fury.io/rb/zurb-foundation">zurb-foundation <img src="https://badge.fury.io/rb/zurb-foundation@2x.png" alt="Zurb Foundation Gem Version" height="18"></a></div>
 </section>
 <script>
   document.write('<script src=' +
