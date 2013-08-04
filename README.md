@@ -87,7 +87,7 @@ Based off aoshiftctrl `htaccess` ..this is a .htaccess/htpasswd combo creation P
 	
 	Will edit already existing files with new content
 	
-	* Have not implemented any timeout/size limit functions for this (planned feature - 04/08/2013) *
+	*Have not implemented any timeout/size limit functions for this (planned feature - 04/08/2013)*
 	<hr />	
 
 	
