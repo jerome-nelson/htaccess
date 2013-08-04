@@ -6,7 +6,7 @@ if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset->add_user($_POST['username']);
 	$htaset->add_pwd($_POST['passwd']);
 	$htaset->add_auths($_POST['auth_type'],$_POST['directory']);
-	$htaset->htcreate(); 
+	$htaset->htcreate();
 	unset($htaset);	
 }
 ?>

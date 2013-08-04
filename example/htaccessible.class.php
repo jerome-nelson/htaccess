@@ -40,7 +40,7 @@ class htaccessible {
 	 */  	
 	public $groupusers; 
 	public $grouppwds; 
-
+	
 	/** 
      * String Declaration Magic Operator 
      * 
@@ -82,7 +82,33 @@ class htaccessible {
 		$count_entries = count($var);
 		return $count_entries;
 	}
+	
+	public function edit($filepath,$edit,$replace) {
 		
+		$textclean = array($edit,$replace,$filepath);
+		
+		foreach($textclean as $key=>$cleaned) {
+			$textclean[$key] = trim($cleaned);
+		}
+
+		$filestring = implode("",file($textclean[2]));		
+		$filename = basename($textclean[2]);
+	
+		$filestring = str_replace($textclean[0], $textclean[1], $filestring);
+		$this->create_file($textclean[2],$filestring);
+	}
+	
+	private function create_file($file,$content) {
+			
+			//If exists file will be deleted
+			$this->deletefile($file);
+			
+			//Add content and create file
+			$handle_group = fopen($file,"a");
+			fputs($handle_group,$content);
+			fclose($handle_group);
+	}
+	
 	/** 
      * Delete a file 
 	 *
@@ -119,7 +145,6 @@ class htaccessible {
 		if(is_array($filename)) {	
 			foreach($filename as $paths) {
 				$paths = $this->delete($paths);
-				//$status. = ' '.basedir($paths).',';
 			}
 			
 		}
@@ -127,8 +152,6 @@ class htaccessible {
 			$filename = $this->delete($filename);
 			$status .= basedir($filename);
 		}
-		
-		return 'The file(s)'.$status.' have all been successfully deleted';
 	}
 	
 	/** 
@@ -220,14 +243,19 @@ class htaccessible {
 	 */	 	
 	public function htcreate() {
 		
+		$htpass_location = $this->location."/.htpasswd";
+		$htacc_location = $this->location."/.htaccess";
+		
 		//Creates .htaccess line-by-line
 		$access =  "Options +Indexes \r\n";
-		$access .= "AuthUserFile ".$this->location."/.htpasswd \r\n";    
+		$access .= "AuthUserFile ".$htpass_location." \r\n";    
 		
 		if(count($this->grouppwds) > 1 && count($this->groupusers) > 1) {
 			
+			$ht_location = $this->location."/.htgroup";
+			
 			$groupname = 'users';
-			$access .= "AuthGroupFile ".$this->location."/.htgroup \r\n";    		
+			$access .= "AuthGroupFile ".$ht_location." \r\n";    		
 			$usertype = 'group '.$groupname;
 			
 			//Encode each password for htgroup file
@@ -236,16 +264,11 @@ class htaccessible {
 			}
 			
 			//Both user array and pwd array are combined into one
-			$htgroupdetails = array_combine($this->groupusers,$this->grouppwds);
-			
-			$this->deletefile($this->location.".htgroup");
+			$htgroupdetails = array_combine($this->groupusers,$this->grouppwds);			
 			
 			//add group users & create .htgroup
-			$htgroup = $groupname.': '.implode(" ",$this->groupusers);	
-			$handle_group = fopen($this->location.".htgroup","a");
-			fputs($handle_group,$htgroup);
-			fclose($handle_group);
-
+			$htgroup = $groupname.': '.implode(" ",$this->groupusers);				
+			$this->create_file($ht_location, $htgroup);
 			
 			$int = 0;
 			foreach($htgroupdetails as $key => $htpass) {
@@ -274,30 +297,12 @@ class htaccessible {
 		$access .= "require ".$usertype." \r\n";
 		$access .= "</Limit> \r\n";
 
-		if(file_exists($this->location.".htaccess")) {
-			unlink($this->location.".htaccess");
-		}
-		
-		$handle_hta = fopen($this->location.".htaccess","w");
-		fputs($handle_hta,$access);
-		fclose($handle_hta);
-		
-		if(file_exists($this->location.".htpasswd")) {
-				unlink($this->location.".htpasswd");
-		}
-		$handle_pwd = fopen($this->location.".htpasswd","a");
-		fputs($handle_pwd,$htpasswd);
-		fclose($handle_pwd);	
-		
-		$htpasswfile = file_get_contents($this->location.".htpasswd");
-		$htaccfile = file_get_contents($this->location.".htaccess");
-		$htgrofile = file_get_contents($this->location.".htgroup");
-		
-		print_r($this);
-				
-		//Post-Request-Get Pattern (PRG)
-		header('Location: '. $_SERVER['REQUEST_URI'] , true, 303);
-		exit;
+		$this->create_file($htacc_location,$access);		
+		$this->create_file($htpass_location, $htpasswd);
+						
+			//Post-Request-Get Pattern (PRG)
+			header('Location: '. $_SERVER['REQUEST_URI'] , true, 303);
+			exit;
 
 	}
 }
