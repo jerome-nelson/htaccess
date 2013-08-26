@@ -1,5 +1,5 @@
 <?php
-include('htaccessible.class.php');
+include('../htaccessible.class.php');
 if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset = new htaccessible;
 	$htaset->filelocation($_POST['location'].'/');
@@ -7,7 +7,7 @@ if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset->add_pwd($_POST['passwd']);
 	$htaset->add_auths($_POST['auth_type'],$_POST['directory']);
 	$htaset->htcreate();
-	unset($htaset);	
+	var_dump($htaset);
 }
 ?>
 <!DOCTYPE HTML>

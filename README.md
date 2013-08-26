@@ -99,9 +99,9 @@ Based off aoshiftctrl `htaccess` ..this is a .htaccess/htpasswd combo creation P
 
 	<hr />	
 	
-9. `setasarray(<string $variable [whitespaced-variables]>)`
+9. `setasarray(<string $variable [seperated-variables]>,<string $exploder [string delimiter]>)`
 
-	Takes string with white-spaced variables and creates array.
+	Takes string with delimiter-spaced variables and creates array using explode. If $exploder isn't set then assumes delimiter is whitespace.
 
 	<hr />	
 		

@@ -53,6 +53,13 @@ class htaccessible {
         return '<p>'.__CLASS__.' shouldn\'t be echoed. Instead please refer to the variables above.</p>';  
     }  
 	
+	
+	public function __construct() {
+		
+		//Setup error array
+		
+	}
+	
 	 /** 
      * Set given $variable as array 
 	 *
@@ -62,9 +69,9 @@ class htaccessible {
 	 * @param string $var required to be whitespaced between values
 	 * @return array $var exploded into array
 	 */	 
-	public function setasarray($var) {
+	public function setasarray($var, $exploder = " ") {
 		if(!is_array($var)) {
-			$var = explode(" ",$var);
+			$var = explode($exploder,$var);
 		}
 		return $var;
 	}
@@ -242,6 +249,12 @@ class htaccessible {
 	 * @param string $given_type, string $given_name
 	 */	 	
 	public function add_auths($given_type, $given_name) {
+		
+		if($given_type == 'digest') {
+			$given_name = explode(" ",$given_name);
+			$given_name = $given_name[0];
+		}
+		
 		$this->authtype = $given_type;
 		$this->authname = $given_name;
 	}
@@ -263,6 +276,12 @@ class htaccessible {
 		$access =  "Options +Indexes \r\n";
 		$access .= "AuthUserFile ".$htpass_location." \r\n";    
 		
+		if($this->authtype == 'digest') {
+			$access .= "AuthDigestDomain / \r\n";
+			$access .= "AuthDigestProvider file \r\n";
+			
+		}
+		
 		if(count($this->grouppwds) > 1 && count($this->groupusers) > 1) {
 			
 			$ht_location = $this->location."/.htgroup";
@@ -271,37 +290,67 @@ class htaccessible {
 			$access .= "AuthGroupFile ".$ht_location." \r\n";    		
 			$usertype = 'group '.$groupname;
 			
-			//Encode each password for htgroup file
-			foreach($this->grouppwds as $key=>$grouppass) {
-				$this->grouppwds[$key] = crypt($grouppass);
+			if($this->authtype == 'digest') {
+		
+				//Encode each password for htgroup file
+				foreach($this->grouppwds as $key=>$grouppass) {
+					$this->grouppwds[$key] = $this->groupusers[$key].':'.$this->authname.':' .md5($this->groupusers[$key].':'.$this->authname.':' .$grouppass); 
+				}
+				
+				//Rename array
+				$htgroupdetails = $this->grouppwds;			
+
+				
+				//Create htpasswd strings
+				$int = 0;
+				foreach($htgroupdetails as $key => $htpass) {
+					if($int == 0) {
+						$htpasswd = $htpass."\r\n";
+					}
+					else {
+						$htpasswd .= $htpass."\r\n";
+					}
+					$int++;
+				}
 			}
+
+			else {
+		
+				//Encode each password for htgroup file
+				foreach($this->grouppwds as $key=>$grouppass) {
+					$this->grouppwds[$key] = '{SHA}' . base64_encode(sha1($grouppass, TRUE));				
+				}
 			
-			//Both user array and pwd array are combined into one
-			$htgroupdetails = array_combine($this->groupusers,$this->grouppwds);			
+				//Both user array and pwd array are combined into one
+				$htgroupdetails = array_combine($this->groupusers,$this->grouppwds);
+
+				//Create htpasswd strings
+				$int = 0;
+				foreach($htgroupdetails as $key => $htpass) {
+					if($int == 0) {
+						$htpasswd = $key.":".$htpass."\r\n";
+					}
+					else {
+						$htpasswd .= $key.":".$htpass."\r\n";
+					}
+					$int++;
+				}				
+			}				
 			
 			//add group users & create .htgroup
-			$htgroup = $groupname.': '.implode(" ",$this->groupusers);				
-			$this->create_file($ht_location, $htgroup);
-			
-			$int = 0;
-			foreach($htgroupdetails as $key => $htpass) {
-				if($int == 0) {
-					$htpasswd = $key.":".$htpass."\r\n";
-				}
-				else {
-					$htpasswd .= $key.":".$htpass."\r\n";
-				}
-				$int++;
-			}
-						
+			$htgroup = $groupname.':'.implode(" ",$this->groupusers);				
+			$this->create_file($ht_location, $htgroup);				
 		}
 		else {
-			if($this->pwd) {
-				$passwd = crypt($this->pwd);
-			}
 			$usertype = 'valid-user';
-			$htpasswd = $this->username.":".$passwd."\n\r";
+			if($this->authtype == 'digest') {
+				$htpasswd = $this->username.":".$this->authname.":".md5($this->username.":".$this->authname.":".$this->pwd)."\n\r";
+			}
+			else {
+				$htpasswd = $this->username.':{SHA}' . base64_encode(sha1($this->pwd, TRUE)) ;
+			}			
 		}
+		
 		
 			
 		$access .= "AuthName \"". $this->authname."\" \r\n";
@@ -314,8 +363,8 @@ class htaccessible {
 		$this->create_file($htpass_location, $htpasswd);
 						
 			//Post-Request-Get Pattern (PRG)
-			header('Location: '. $_SERVER['REQUEST_URI'] , true, 303);
-			exit;
+//			header('Location: '. $_SERVER['REQUEST_URI'] , true, 303);
+//			exit;
 
 	}
 }
