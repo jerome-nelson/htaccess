@@ -1,6 +1,5 @@
 <?php
 include('../htaccessible.class.php');
-print_r($_SESSION);
 if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset = new htaccessible('sha1');
 	$htaset->filelocation($_POST['location'].'/');
@@ -8,7 +7,6 @@ if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset->add_pwd($_POST['passwd']);
 	$htaset->add_auths($_POST['auth_type'],$_POST['directory']);
 	$htaset->htcreate();
-//	$htaset->edit('C:/xampp/htdocs/HTAccessible/test/pass/.htpasswd','root32','root4');
 }
 ?>
 <!DOCTYPE HTML>

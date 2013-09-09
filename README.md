@@ -10,8 +10,12 @@ Based off aoshiftctrl `htaccess` ..this is a .htaccess/htpasswd combo creation P
 
 	#### Example ####
 		include("htaccessible.class.php");
-		$htaset = new htaccessible;
+		$htaset = new htaccessible($hashtype,$options);
 
+**$hashtype** is used to decide the encryption used for each password hash
+ current values are: md5, sha1 or md5-digest. 
+
+**TO DO:** To set the blowfish encryption (need newer version of APache to do so) 
 	<hr />
 		
 2. Once this is set you need to configure these htaccessible variables to get it to work (full list of functions below):
