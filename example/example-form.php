@@ -1,6 +1,6 @@
 <?php
+session_start();
 include('../htaccessible.class.php');
-print_r($_SESSION);
 if(isset($_POST['submit']) && $_POST['submit']) {
 	$htaset = new htaccessible('sha1');
 	$htaset->filelocation($_POST['location'].'/');
